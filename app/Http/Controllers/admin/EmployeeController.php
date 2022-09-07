@@ -72,7 +72,8 @@ class EmployeeController extends Controller
             $employee->image = $fileName;
             $employee->save();
             $lastId = $employee->id;
-            $file->storeAs('',$fileName,'python-images');
+            $fileNameForPython = $lastId.'_'.$fileName;
+            $file->storeAs('',$fileNameForPython,'python-images');
             $file->storeAs('public/employee/'.$lastId, $fileName);
             return redirect()->route('employee.index')->with('success', 'Employee Added successfully1');
         }
@@ -100,17 +101,19 @@ class EmployeeController extends Controller
                 'image' => ['required', 'image', 'mimes:jpeg,jpg,png','max:2048'],
             ]);
             $file = $request->file('image');
-            if (Storage::disk('python-images')->exists($employee->image)){
+            if (Storage::disk('python-images')->exists($employee->id.'_'.$employee->image)){
                 Storage::disk('python-images')->delete($employee->image);
             }
             Storage::deleteDirectory('public/employee/'.$request->id);
 //            $fileName = Str::title($request->name).'.'.$file->getClientOriginalExtension();
             $fileName = Str::title($request->name).'.jpg';
-            $file->storeAs('',$fileName,'python-images');
+            $fileNameForPython = $employee->id.'_'.Str::title($request->name).'.jpg';
+            $file->storeAs('',$fileNameForPython,'python-images');
             $file->storeAs('public/employee/'.$request->id, $fileName);
         } elseif ($request->name !== $employee->name){
             $fileName = Str::title($request->name).'.'.File::extension($employee->image);
-            Storage::disk('python-images')->move($employee->image, $fileName);
+            $fileNameForPython = $employee->id.'_'.Str::title($request->name).'.'.File::extension($employee->image);
+            Storage::disk('python-images')->move($employee->id.'_'.$employee->image, $fileNameForPython);
             Storage::move('public/employee/'.$employee->id.'/'.$employee->image, 'public/employee/'.$employee->id.'/'.$fileName);
         } else {
             $fileName = $request->oldImage;
@@ -127,8 +130,8 @@ class EmployeeController extends Controller
     {
         $employee = Employee::where('id', $request->id)->first();
         if (!empty($employee)){
-            if (Storage::disk('python-images')->exists($employee->image)){
-                Storage::disk('python-images')->delete($employee->image);
+            if (Storage::disk('python-images')->exists($employee->id.'_'.$employee->image)){
+                Storage::disk('python-images')->delete($employee->id.'_'.$employee->image);
             }
             Storage::deleteDirectory('public/employee/'.$employee->id);
             $employee->delete();
