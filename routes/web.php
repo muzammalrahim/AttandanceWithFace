@@ -49,9 +49,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('employees/edit/{id}', [\App\Http\Controllers\Admin\EmployeeController::class, 'edit'])->name('employee.edit');
     Route::post('employees/update', [\App\Http\Controllers\Admin\EmployeeController::class, 'update'])->name('employee.update');
     Route::post('employees/ajax/delete', [\App\Http\Controllers\Admin\EmployeeController::class, 'delete'])->name('employee.delete');
-
+    Route::get('employees/import', [\App\Http\Controllers\Admin\EmployeeController::class, 'import'])->name('employee.import');
+    Route::post('employees/import/processing', [\App\Http\Controllers\Admin\EmployeeController::class, 'importProcessing'])->name('employee.import.processing');
     //Attendance
     Route::get('attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('attendance.index');
     Route::get('attendance/ajax/datatable', [\App\Http\Controllers\Admin\AttendanceController::class, 'datatable'])->name('attendance.datatable');
-
 });

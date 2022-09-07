@@ -65,7 +65,7 @@
                             </x-adminlte-input-file>
                         </div>
                         <div class="form-group col-4">
-                            <img style="max-height: 200px" class="rounded mx-auto d-block" id="image_preview" src="{{ asset('storage/employee/'.$employee->id.'/'.$employee->image) }}" alt="{{ $employee->name }}">
+                            <img style="max-height: 200px" class="rounded mx-auto d-block" id="image_preview" src="{{ asset('storage/employee/'.$employee->image) }}" alt="{{ $employee->name }}">
                             <input type="hidden" name="oldImage" value="{{ $employee->image }}">
                         </div>
                     </div>
@@ -96,5 +96,5 @@
                 reader.readAsDataURL(this.files[0]);
             });
         });
-    </script
+    </script>
 @stop

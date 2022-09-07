@@ -9,7 +9,7 @@
         </div>
         <div class="col-6 text-right">
             <a href="{{ route('department.create') }}" class="btn btn-sm btn-primary">
-                <i class="fa fa-plus-circle"> Add</i>
+                <i class="fa fa-plus-circle"></i> Add
             </a>
         </div>
     </div>
@@ -45,7 +45,7 @@
             </div>
             <x-slot name="footerSlot">
                 <x-adminlte-button id="edit_action" class="mr-auto" theme="danger" label="Cancel" data-dismiss="modal"/>
-                <x-adminlte-button id="save_department" type="submit" theme="success" label="Update"/>
+                <x-adminlte-button id="save_department" data-id="" type="submit" theme="success" label="Update"/>
             </x-slot>
         </form>
     </x-adminlte-modal>
@@ -147,7 +147,7 @@
             });
             // delete modal
             this.delete_action = function (id){
-                $('#delete_department').attr('data-id', id);
+                $('#delete_department').data('id', id);
             }
             $('#delete_department').click(function (e){
                 e.preventDefault();

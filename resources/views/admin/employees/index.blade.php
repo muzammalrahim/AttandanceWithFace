@@ -7,9 +7,14 @@
         <div class="col-6">
             <h1>{{ $content_header }}</h1>
         </div>
-        <div class="col-6 text-right">
-            <a href="{{ route('employee.create') }}" class="btn btn-sm btn-primary">
-                <i class="fa fa-plus-circle"> Add</i>
+        <div class="col-5 text-right">
+            <a href="{{ route('employee.import') }}" class="btn btn-primary">
+                <i class="fa fa-upload"></i> Import
+            </a>
+        </div>
+        <div class="col-1 text-right">
+            <a href="{{ route('employee.create') }}" class="btn btn-primary">
+                <i class="fa fa-plus-circle"></i> Add
             </a>
         </div>
     </div>
@@ -40,7 +45,7 @@
         </div>
         <x-slot name="footerSlot">
             <x-adminlte-button id="delete_action" theme="primary" label="No" data-dismiss="modal"/>
-            <x-adminlte-button id="delete_employee" type="submit" theme="danger" label="Yes"/>
+            <x-adminlte-button id="delete_employee" data-id="" type="submit" theme="danger" label="Yes"/>
         </x-slot>
     </x-adminlte-modal>
 @stop
@@ -75,7 +80,7 @@
             });
             // delete modal
             this.delete_action = function (id){
-                $('#delete_employee').attr('data-id', id);
+                $('#delete_employee').data('id', id);
             }
             $('#delete_employee').click(function (e){
                 e.preventDefault();
