@@ -331,6 +331,12 @@ return [
             'active' => ['admin/employees', 'admin/employee*', 'regex:@^admin/employee/[0-9]+$@'],
             'icon'        => 'fa fa-user',
         ],
+        [
+            'text'        => 'Attendance',
+            'url'         => 'admin/attendance',
+            'active' => ['admin/Attendance', 'admin/Attendance*', 'regex:@^admin/Attendance/[0-9]+$@'],
+            'icon'        => 'fa fa-user',
+        ],
 //        [
 //            'text' => 'change_password',
 //            'url'  => 'admin/settings',
