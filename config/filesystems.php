@@ -44,7 +44,7 @@ return [
 
         'python-images' => [
             'driver' => 'local',
-            'root' => __DIR__ . '/../../pythonimages',
+            'root' => __DIR__ . '/../../face/ImageAttendance',
             'visibility' => 'public',
         ],
 
