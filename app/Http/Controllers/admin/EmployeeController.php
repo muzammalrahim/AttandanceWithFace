@@ -28,7 +28,7 @@ class EmployeeController extends Controller
                 return $item->department->name;
             })
             ->editColumn('image', function ($item){
-                $html = '<img src="'.asset("storage/employee/$item->id/$item->image").'" style="max-height: 100px" class="rounded mx-auto d-block"/>';
+                $html = '<img src="'.asset("storage/employee/$item->image").'" style="max-height: 100px" class="rounded mx-auto d-block"/>';
                 return $html;
             })
             ->editColumn('updated_at', function ($item){
@@ -62,8 +62,9 @@ class EmployeeController extends Controller
 
         if ($request->hasFile('image')){
             $file = $request->file('image');
+            $nameWithoutSpaces = preg_replace('/\s+/', '_', Str::title($request->name));
 //            $fileName = Str::title($request->name).'.'.$file->getClientOriginalExtension();
-            $fileName = Str::title($request->name).'.jpg';
+            $fileName = $nameWithoutSpaces.'_'.$request->cnic.'.jpg';
 
             $employee = new Employee();
             $employee->name = $request->name;
@@ -72,9 +73,9 @@ class EmployeeController extends Controller
             $employee->image = $fileName;
             $employee->save();
             $lastId = $employee->id;
-            $fileNameForPython = $lastId.'_'.$fileName;
+            $fileNameForPython = $lastId.'_'.$nameWithoutSpaces.'.jpg';
             $file->storeAs('',$fileNameForPython,'python-images');
-            $file->storeAs('public/employee/'.$lastId, $fileName);
+            $file->storeAs('public/employee/', $fileName);
             return redirect()->route('employee.index')->with('success', 'Employee Added successfully1');
         }
     }
@@ -96,25 +97,28 @@ class EmployeeController extends Controller
             'cnic' => ['required', 'unique:employees,cnic,'.$employee->id, 'size:15', 'regex:/^([0-9]{5})[\-]([0-9]{7})[\-]([0-9]{1})+/'],
             'department' => ['required', 'not_in:0'],
         ]);
+        $nameWithoutSpaces = preg_replace('/\s+/', '_', Str::title($request->name));
         if ($request->hasFile('image')){
             $request->validate([
                 'image' => ['required', 'image', 'mimes:jpeg,jpg,png','max:2048'],
             ]);
             $file = $request->file('image');
-            if (Storage::disk('python-images')->exists($employee->id.'_'.$employee->image)){
-                Storage::disk('python-images')->delete($employee->image);
+            $fileName = $nameWithoutSpaces.'_'.$request->cnic.'.jpg';
+            $fileNameForPython = $employee->id.'_'.$nameWithoutSpaces.'.jpg';
+            if (Storage::disk('python-images')->exists($fileNameForPython)){
+                Storage::disk('python-images')->delete($fileNameForPython);
             }
-            Storage::deleteDirectory('public/employee/'.$request->id);
+            Storage::delete('public/employee/'.$fileName);
 //            $fileName = Str::title($request->name).'.'.$file->getClientOriginalExtension();
-            $fileName = Str::title($request->name).'.jpg';
-            $fileNameForPython = $employee->id.'_'.Str::title($request->name).'.jpg';
+
             $file->storeAs('',$fileNameForPython,'python-images');
-            $file->storeAs('public/employee/'.$request->id, $fileName);
+            $file->storeAs('public/employee/', $fileName);
         } elseif ($request->name !== $employee->name){
-            $fileName = Str::title($request->name).'.'.File::extension($employee->image);
-            $fileNameForPython = $employee->id.'_'.Str::title($request->name).'.'.File::extension($employee->image);
-            Storage::disk('python-images')->move($employee->id.'_'.$employee->image, $fileNameForPython);
-            Storage::move('public/employee/'.$employee->id.'/'.$employee->image, 'public/employee/'.$employee->id.'/'.$fileName);
+            $fileName = $nameWithoutSpaces.'_'.$employee->cnic.'.jpg';
+            $fileNameForPython = $employee->id.'_'.$nameWithoutSpaces.'.jpg';
+            $oldFileNameForPython = $employee->id.'_'.preg_replace('/\s+/', '_', Str::title($employee->name)).'.jpg';
+            Storage::disk('python-images')->move($oldFileNameForPython, $fileNameForPython);
+            Storage::move('public/employee/'.$employee->image, 'public/employee/'.$fileName);
         } else {
             $fileName = $request->oldImage;
         }
@@ -130,14 +134,77 @@ class EmployeeController extends Controller
     {
         $employee = Employee::where('id', $request->id)->first();
         if (!empty($employee)){
-            if (Storage::disk('python-images')->exists($employee->id.'_'.$employee->image)){
-                Storage::disk('python-images')->delete($employee->id.'_'.$employee->image);
+            $nameWithoutSpaces = preg_replace('/\s+/', '_', Str::title($employee->name));
+            $fileNameForPython = $employee->id.'_'.$nameWithoutSpaces.'.jpg';
+            if (Storage::disk('python-images')->exists($fileNameForPython)){
+                Storage::disk('python-images')->delete($fileNameForPython);
             }
-            Storage::deleteDirectory('public/employee/'.$employee->id);
+            Storage::delete('public/employee/'.$employee->image);
             $employee->delete();
             return response()->json(['message' => 'Employee deleted successfully!']);
         } else {
             return response()->json(['message' => 'Employee does not exist!'], 404);
+        }
+    }
+
+    public function import()
+    {
+        $data['title'] = 'Import Employees';
+        $data['content_header'] = 'Import Employees';
+        return view('admin.employees.import', $data);
+    }
+
+    public function importProcessing(Request $request)
+    {
+        // upload images
+        if ($request->hasFile('employeeImages')){
+            $zip = new \ZipArchive();
+            $status = $zip->open($request->file('employeeImages')->getRealPath());
+            if ($status !== true){
+                throw new \Exception($status);
+            } else {
+                $tempStoragePath = storage_path('app/public/temp/employees/');
+                if (!File::exists($tempStoragePath)){
+                    File::makeDirectory($tempStoragePath,0755,true);
+                }
+                $zip->extractTo($tempStoragePath);
+                $zip->close();
+            }
+        }
+
+        // csv processing
+        if ($request->hasFile('employeeCsv')){
+            $csvData = array_map('str_getcsv', \file($request->employeeCsv));
+            if (count($csvData) > 1){
+                $pathTempEmployees = storage_path('app/public/temp');
+                $tempFiles = File::allFiles($pathTempEmployees);
+                foreach ($csvData as $key => $item){
+                    if ($key==0){
+                        continue;
+                    }
+                    $nameWithoutSpaces = preg_replace('/\s+/', '_', Str::title($item[1]));
+                    $fileName = $nameWithoutSpaces.'_'.$item[2].'.jpg';
+                    $employee = new Employee();
+                    $employee->department_id = $item[0];
+                    $employee->name = $item[1];
+                    $employee->cnic = $item[2];
+                    $employee->image = $fileName;
+                    $employee->save();
+                    $lastId = $employee->id;
+                    foreach ($tempFiles as $tempFile){
+                        if ($tempFile->getFilename() == $item[3]){
+                            $fileNameTemp = $nameWithoutSpaces.'_'.$item[2].'.jpg';
+                            $fileNameTempForPython = $lastId.'_'.$nameWithoutSpaces.'.jpg';
+                            Storage::copy('public/temp/employees/'.$tempFile->getFilename(), 'public/employee/'.$fileNameTemp);
+                            Storage::disk('python-images')->put($fileNameTempForPython, Storage::get('public/temp/employees/'.$tempFile->getFilename()));
+                        }
+                    }
+                }
+                Storage::deleteDirectory('public/temp/');
+                return redirect()->route('employee.index')->with('success', count($csvData) . ' employees have been imported');
+            } else {
+                return back()->with('error', 'File has no data');
+            }
         }
     }
 }
