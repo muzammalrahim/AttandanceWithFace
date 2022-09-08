@@ -99,9 +99,9 @@ class EmployeeController extends Controller
         ]);
         $nameWithoutSpaces = preg_replace('/\s+/', '_', Str::title($request->name));
         if ($request->hasFile('image')){
-            $request->validate([
-                'image' => ['required', 'image', 'mimes:jpeg,jpg,png','max:2048'],
-            ]);
+            // $request->validate([
+            //     'image' => ['required', 'image', 'mimes:jpeg,jpg,png','max:2048'],
+            // ]);
             $file = $request->file('image');
             $fileName = $nameWithoutSpaces.'_'.$request->cnic.'.jpg';
             $fileNameForPython = $employee->id.'_'.$nameWithoutSpaces.'.jpg';
@@ -201,7 +201,7 @@ class EmployeeController extends Controller
                     }
                 }
                 Storage::deleteDirectory('public/temp/');
-                return redirect()->route('employee.index')->with('success', count($csvData) . ' employees have been imported');
+                return redirect()->route('employee.index')->with('success', count($csvData) - 1 . ' employees have been imported');
             } else {
                 return back()->with('error', 'File has no data');
             }

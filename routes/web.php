@@ -31,6 +31,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     })->name('admin.dashboard');
 
     // Dashboard
+    Route::get('dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
 
     // Departments
     Route::get('departments', [\App\Http\Controllers\Admin\DepartmentController::class, 'index'])->name('department.index');
