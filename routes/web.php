@@ -54,4 +54,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     //Attendance
     Route::get('attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('attendance.index');
     Route::get('attendance/ajax/datatable', [\App\Http\Controllers\Admin\AttendanceController::class, 'datatable'])->name('attendance.datatable');
+    Route::post('attendance/ajax/filter', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceFilter'])->name('attendance.filter');
 });
