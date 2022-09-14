@@ -20,7 +20,7 @@
             @php
             $config = ['format' => 'DD-MM-YYYY', 'daysOfWeekDisabled' => [0]];
             @endphp
-            <x-adminlte-input-date id="date-filter" name="dateFilter" :config="$config" placeholder="Choose a date...">
+            <x-adminlte-input-date id="date-filter" value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" name="dateFilter" :config="$config" placeholder="Choose a date...">
                 <x-slot name="prependSlot">
                     <div class="input-group-text bg-gradient-gray">
                         <i class="fas fa-calendar-alt"></i>

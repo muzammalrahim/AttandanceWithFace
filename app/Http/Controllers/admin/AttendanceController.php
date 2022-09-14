@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Attendance;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
@@ -42,13 +43,23 @@ class AttendanceController extends Controller
                             return $dJoin->on('e.department_id', '=', 'd.id');
                         });
                 });
+        } else if (!empty($request->departmentId) && $request->departmentId != 0 && !empty($request->date)) {
+            $query->where('attendances.date', $request->date)
+                ->join('employees as e', function ($eJoin) use ($request){
+                    $eJoin->on('attendances.employee_id', '=', 'e.id')
+                        ->join('departments as d', function ($dJoin) use ($request){
+                            return $dJoin->on('e.department_id', '=', 'd.id')
+                                ->where('d.id', $request->departmentId);
+                        });
+                });
         } else {
-            $query->leftJoin('employees as e', function ($eJoin){
-                $eJoin->on('attendances.employee_id', '=', 'e.id')
-                    ->leftJoin('departments as d', function ($dJoin){
-                        return $dJoin->on('e.department_id', '=', 'd.id');
-                    });
-            });
+            $query->where('attendances.date', Carbon::now()->format('d-m-Y'))
+                ->leftJoin('employees as e', function ($eJoin){
+                    $eJoin->on('attendances.employee_id', '=', 'e.id')
+                        ->leftJoin('departments as d', function ($dJoin){
+                            return $dJoin->on('e.department_id', '=', 'd.id');
+                        });
+                });
         }
         $data = $query->get([
             'attendances.id', 'attendances.date', 'attendances.time_in', 'attendances.time_out',
