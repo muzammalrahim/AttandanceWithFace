@@ -334,14 +334,14 @@ return [
         [
             'text'        => 'Attendance',
             'url'         => 'admin/attendance',
-            'active' => ['admin/Attendance', 'admin/Attendance*', 'regex:@^admin/Attendance/[0-9]+$@'],
+            'active' => ['admin/attendance', 'admin/attendance*', 'regex:@^admin/attendance/[0-9]+$@'],
             'icon'        => 'fa fa-user',
         ],
-        
+
          [
             'text'        => 'Assign keys',
             'url'         => 'admin/assignKeys',
-            'active' => ['admin/AssignKey', 'admin/AssignKey*', 'regex:@^admin/AssignKey/[0-9]+$@'],
+            'active' => ['admin/assignKeys', 'admin/assignKeys*', 'regex:@^admin/assignKeys/[0-9]+$@'],
             'icon'        => 'fa fa-user',
         ],
 //        [
@@ -476,7 +476,7 @@ return [
             ],
         ],
         'Chartjs' => [
-            'active' => true,
+            'active' => false,
             'files' => [
                 [
                     'type' => 'js',
