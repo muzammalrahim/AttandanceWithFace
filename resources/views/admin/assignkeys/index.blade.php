@@ -40,11 +40,14 @@
             <th>Id</th>
             <th>Name</th>
             <th>CNIC</th>
-            <th>Key Authority</th>
+            {{-- <th>Key Authority</th> --}}
             <th>Department</th>
             <th>Date</th>
-            <th>Time in</th>
-            <th>Time out</th>
+            <th>Assign Key Time</th>
+            <th>Recieve Key Time</th>
+            {{-- <th>Recieve Key</th> --}}
+            {{-- <th>Time out</th> --}}
+            <th>Action(Give and Recieve)</th>
             <!-- <th>Action</th> -->
         </tr>
         </thead>
@@ -117,6 +120,9 @@
                 });
             });
             // get datatable data
+            function currentdate(){
+
+            }
             function getDataTableData(departmentId = null, date = null){
                 $('#att-datatable').DataTable({
                     processing: true,
@@ -125,7 +131,7 @@
                     iDisplayLength: 10,
                     order: [[0, 'desc']],
                     ajax: {
-                        url: '{!! route('attendance.datatable') !!}',
+                        url: '{!! route('assignKeys.datatable') !!}',
                         data: function (data){
                             data.departmentId = departmentId;
                             data.date = date;
@@ -135,11 +141,13 @@
                         { data: 'id', name: 'id' },
                         { data: 'name', name: 'name', orderable: false, searchable: false },
                         { data: 'cnic', name: 'cnic', orderable: false, searchable: false },
-                        { data: 'key_authority', name: 'key_authority', orderable: false, searchable: false },
+                        // { data: 'key_authority', name: 'key_authority', orderable: false, searchable: false },
                         { data: 'department', name: 'department', orderable: false, searchable: false },
                         { data: 'date', name: 'date', orderable: false, searchable: false },
-                        { data: 'time_in', name: 'time_in', orderable: false, searchable: false },
-                        { data: 'time_out', name: 'time_out', orderable: false, searchable: false },
+                        { data: 'assign_key', name: 'assign_key', orderable: false, searchable: false },
+                        { data: 'recieve_key', name: 'recieve_key', orderable: false, searchable: false },
+                        // { data: 'time_out', name: 'time_out', orderable: false, searchable: false },
+                        { data: 'action', name: 'action', orderable: false, searchable: false },
                         // { data: 'updated_at', name: 'updated_at', searchable: false },
                         // { data: 'action', name: 'action', orderable: false, searchable: false },
                     ],
@@ -151,9 +159,12 @@
                         var data = api.rows( {page:'current'} ).data();
                         var rows = api.rows( {page:'current'} ).nodes();
                         for(var i=0; i < data.length; i++){
-                            if (data[i].key_authority == "Yes") {
-                                $(rows[i]).addClass('bg-success');
-                            }
+                            // if (data[i].key_authority) {
+                            //     $(rows[i]).addClass('bg-success');
+                            // }
+                            // else{
+
+                            // }
                         }
                     }
                 });
@@ -165,6 +176,8 @@
                 var dateChange = date.format('DD-MM-YYYY');
                 getDataTableData(null ,dateChange);
             });
+
         });
+
     </script>
 @stop
