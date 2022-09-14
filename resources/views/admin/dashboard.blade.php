@@ -1,32 +1,34 @@
 @extends('adminlte::page')
 
-{{--@section('title', $title)--}}
+@section('title', $title)
 
 @section('content_header')
-
-{{--    <h1> {{ $content_header }} </h1>--}}
-
+<div class="row">
+    <div class="col-6">
+        <h1>{{ $content_header }}</h1>
+    </div>
+</div>
 @stop
 
 @section('content')
-    <p>Welcome to Attendance With Face Admin Dashbord</p>
+    <!-- <p>Welcome to Attendance With Face Admin Dashbord</p> -->
     <div class="row">
       
         <div class="col-md-3">
     {{-- Themes --}}
-    <x-adminlte-small-box title="65" text="Total Employees" icon="fas fa-eye text-dark"
+    <x-adminlte-small-box title="{{ $totalEmployees }}" text="Total Employees" icon="fas fa-eye text-dark"
         theme="teal" url="#" url-text="View details"/>
 
    </div>
    <div class="col-md-3 ">
     {{-- Themes --}}
-    <x-adminlte-small-box title="60" text="ON TIME PERCENTAGE" icon="fas fa-eye text-dark"
+    <x-adminlte-small-box title="{{ $totalDepartments }}" text="Total Departments" icon="fas fa-eye text-dark"
         theme="teal" url="#" url-text="View details"/>
 
    </div>
    <div class="col-md-3 ">
     {{-- Themes --}}
-    <x-adminlte-small-box title="55" text="ON TIME TODAY" icon="fas fa-eye text-dark"
+    <x-adminlte-small-box title="{{ $totalAtendee }}" text="Total Attendee" icon="fas fa-eye text-dark"
         theme="teal" url="#" url-text="View details"/>
 
    </div>
@@ -36,7 +38,7 @@
 
     </div>
     </div>
-@push('js')
+{{-- @push('js')
 <script>
 
     $(document).ready(function() {
@@ -72,9 +74,8 @@
     })
 
 </script>
-@endpush
+@endpush --}}
 @stop
-@section('')
 @section('css')
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
 @stop

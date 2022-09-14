@@ -39,7 +39,7 @@
                             </span>
                             @enderror
                         </div>
-                        <div class="form-group col-12">
+                        <div class="form-group col-6">
                             <label for="department" class="font-weight-normal"> Department </label>
                             <select name="department" class="form-control @error('department') is-invalid @enderror">
                                 <option value="0">--Select Department--</option>
@@ -54,6 +54,15 @@
                             </span>
                             @enderror
                         </div>
+                         <div class="form-group col-6">
+                            <label for="key_authority" class="font-weight-normal"> Key Authority </label>
+
+                            <select name="key_authority" class="form-control">
+                                @foreach($keyAuth as $key => $value)
+                                    <option value="{{ $key }}" {{ $employee->key_authority == $key ? 'selected' : '' }}>{{  $value }}</option>
+                                @endforeach
+                            </select>
+                         </div>
                         <div class="form-group col-8">
                             <label for="image" class="font-weight-normal"> Image </label>
                             <x-adminlte-input-file name="image" igroup-size="md" placeholder="Choose an image...">

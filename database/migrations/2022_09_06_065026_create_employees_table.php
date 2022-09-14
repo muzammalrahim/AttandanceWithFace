@@ -18,6 +18,7 @@ class CreateEmployeesTable extends Migration
             $table->integer('department_id');
             $table->string('name');
             $table->string('cnic')->unique();
+            $table->integer('key_authority');
             $table->text('image');
             $table->timestamps();
         });

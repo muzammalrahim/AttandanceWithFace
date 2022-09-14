@@ -29,6 +29,7 @@
             <th>Id</th>
             <th>Name</th>
             <th>CNIC</th>
+            <th>Key Authority</th>
             <th>Department</th>
             <th>Photo</th>
             <th>Updated At</th>
@@ -69,12 +70,22 @@
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
                     { data: 'cnic', name: 'cnic' },
+                    { data: 'key_authority', name: 'key_authority'},
                     { data: 'department', name: 'department', orderable: false, searchable: false },
                     { data: 'image', name: 'image', orderable: false, searchable: false },
                     { data: 'updated_at', name: 'updated_at', searchable: false },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
                 rowCallback: function (row, data){
+                    // if(data.key_authority == 1){
+                    //     data.key_authority = 'Yes'
+                    //     console.log(data.key_authority);
+                    // }
+                    // else
+                    // {
+                    //     data.key_authority = 'No'
+                    //     console.log(data.key_authority);                    
+                    // }
                     $(row).find('td').addClass('align-middle');
                 }
             });

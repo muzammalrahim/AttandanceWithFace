@@ -23,15 +23,16 @@ Route::get('/admin', function (){
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/
+    ', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function (){
-    Route::get('dashboard', function (){
-        return view('admin.index');
-    })->name('admin.dashboard');
+    // Route::get('dashboard', function (){
+    //     return view('admin.index');
+    // })->name('admin.dashboard');
 
     // Dashboard
-    Route::get('dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     // Departments
     Route::get('departments', [\App\Http\Controllers\Admin\DepartmentController::class, 'index'])->name('department.index');
@@ -56,4 +57,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('attendance.index');
     Route::get('attendance/ajax/datatable', [\App\Http\Controllers\Admin\AttendanceController::class, 'datatable'])->name('attendance.datatable');
     Route::post('attendance/ajax/filter', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceFilter'])->name('attendance.filter');
+
+     //Assign Keys
+    Route::get('assignKeys', [\App\Http\Controllers\Admin\AssignKeyController::class, 'index'])->name('assignkey.index');
+    Route::get('assignKeys/ajax/datatable', [\App\Http\Controllers\Admin\AssignKeyController::class, 'datatable'])->name('assignKeys.datatable');
+    Route::get('onclick_assignKey', [\App\Http\Controllers\Admin\AssignKeyController::class, 'onclick_assignKey'])->name('onclick_assignKey');
+    Route::get('onclick_recieveKey', [\App\Http\Controllers\Admin\AssignKeyController::class, 'onclick_recieveKey'])->name('onclick_recieveKey');
+
+    // Route::get('assignKeys/givekey/{id}', [\App\Http\Controllers\Admin\AssignKeyController::class, 'givekey'])->name('assignKeys.givekey');
+
+
+
 });

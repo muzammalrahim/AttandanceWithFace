@@ -337,6 +337,13 @@ return [
             'active' => ['admin/Attendance', 'admin/Attendance*', 'regex:@^admin/Attendance/[0-9]+$@'],
             'icon'        => 'fa fa-user',
         ],
+        
+         [
+            'text'        => 'Assign keys',
+            'url'         => 'admin/assignKeys',
+            'active' => ['admin/AssignKey', 'admin/AssignKey*', 'regex:@^admin/AssignKey/[0-9]+$@'],
+            'icon'        => 'fa fa-user',
+        ],
 //        [
 //            'text' => 'change_password',
 //            'url'  => 'admin/settings',

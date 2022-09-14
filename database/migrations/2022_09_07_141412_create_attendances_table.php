@@ -17,8 +17,10 @@ class CreateAttendancesTable extends Migration
             $table->id();
             $table->integer('employee_id');
             $table->string('date');
-            $table->string('time_in');
-            $table->string('time_out');
+            $table->time('time_in');
+            $table->time('time_out');
+            $table->time('assign_key')->nullable();
+            $table->time('recieve_key')->nullable();
             $table->timestamps();
         });
     }

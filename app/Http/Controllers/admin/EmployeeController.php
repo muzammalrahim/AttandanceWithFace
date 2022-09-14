@@ -23,9 +23,14 @@ class EmployeeController extends Controller
     public function datatable()
     {
         $data = Employee::with(['department'])->get();
+
+        // dd($data[0]);
         return datatables($data)
             ->editColumn('department', function ($item) {
                 return $item->department->name;
+            })
+            ->editColumn('key_authority', function ($item) {
+                return $item->key_authority ? 'Yes' : 'No';
             })
             ->editColumn('image', function ($item){
                 $html = '<img src="'.asset("storage/employee/$item->image").'" style="max-height: 100px" class="rounded mx-auto d-block"/>';
@@ -48,14 +53,17 @@ class EmployeeController extends Controller
         $data['title'] = 'Add Employee';
         $data['content_header'] = 'Add Employee';
         $data['departments'] = Department::all();
+        $data['keyAuth'] = ['0' => 'No', '1' => 'Yes'];
         return view('admin.employees.create', $data);
     }
 
     public function store(Request $request)
-    {
+    {   
+        // dd($request->all());
         $request->validate([
             'name' => ['required'],
             'cnic' => ['required', 'unique:employees', 'size:15', 'regex:/^([0-9]{5})[\-]([0-9]{7})[\-]([0-9]{1})+/'],
+            'key_authority' => ['required'],
             'department' => ['required', 'not_in:0'],
             'image' => ['required', 'image', 'mimes:jpeg,jpg,png','max:2048'],
         ]);
@@ -70,6 +78,7 @@ class EmployeeController extends Controller
             $employee->name = $request->name;
             $employee->cnic = $request->cnic;
             $employee->department_id = $request->department;
+            $employee->key_authority = $request->key_authority;
             $employee->image = $fileName;
             $employee->save();
             $lastId = $employee->id;
@@ -86,11 +95,13 @@ class EmployeeController extends Controller
         $data['content_header'] = 'Edit Employee';
         $data['employee'] = Employee::with(['department'])->where('id', $id)->first();
         $data['departments'] = Department::all();
+        $data['keyAuth'] = ['0' => 'No', '1' => 'Yes'];
         return view('admin.employees.edit', $data);
     }
 
     public function update(Request $request)
     {
+        // dd($request->all());
         $employee = Employee::where('id', $request->id)->first();
         $request->validate([
             'name' => ['required'],
@@ -125,6 +136,7 @@ class EmployeeController extends Controller
         $employee->name = $request->name;
         $employee->cnic = $request->cnic;
         $employee->department_id = $request->department;
+        $employee->key_authority = $request->key_authority;
         $employee->image = $fileName;
         $employee->save();
         return redirect()->route('employee.index')->with('success', 'Employee updated successfully!');
@@ -188,11 +200,13 @@ class EmployeeController extends Controller
                     $employee->department_id = $item[0];
                     $employee->name = $item[1];
                     $employee->cnic = $item[2];
+                    $employee->key_authority = $item[3];
+                    // dd($employee->key_authority);
                     $employee->image = $fileName;
                     $employee->save();
                     $lastId = $employee->id;
                     foreach ($tempFiles as $tempFile){
-                        if ($tempFile->getFilename() == $item[3]){
+                        if ($tempFile->getFilename() == $item[4]){
                             $fileNameTemp = $nameWithoutSpaces.'_'.$item[2].'.jpg';
                             $fileNameTempForPython = $lastId.'_'.$nameWithoutSpaces.'.jpg';
                             Storage::copy('public/temp/employees/'.$tempFile->getFilename(), 'public/employee/'.$fileNameTemp);
